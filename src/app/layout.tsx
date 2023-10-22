@@ -6,8 +6,22 @@ import { Auth } from './auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const title = 'Groeispurters';
+
 export const metadata: Metadata = {
-  title: 'Groeispurters 👯‍♀️',
+  applicationName: title,
+  title,
+  description: '',
+  manifest: '/manifest.json',
+  themeColor: '#000',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title,
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
