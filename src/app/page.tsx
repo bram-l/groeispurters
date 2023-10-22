@@ -1,37 +1,48 @@
-import styles from './page.module.css';
-import { parseLine, getMilkPerDay } from '@/features/milk';
-import { readFile } from 'fs/promises';
 import { MilkGraph } from './graph';
+import { Guard } from './auth';
+import Link from 'next/link';
+import { client } from './api/data/client';
+import { Data, SerializedData } from '../domain/data';
+import { Button } from '@/components/button';
 
 export default async function Home() {
   const { bette, elsie } = await getData();
 
   return (
-    <main className={styles.main}>
+    <Guard>
       <h2>🍼</h2>
-      <MilkGraph bette={bette} elsie={elsie} />
-    </main>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}
+      >
+        <MilkGraph bette={bette ?? []} elsie={elsie ?? []} />
+        <div style={{ marginTop: '20px' }}>
+          <Link href="/upload">
+            <Button>Upload</Button>
+          </Link>
+        </div>
+      </div>
+    </Guard>
   );
 }
 
-type Daughter = 'bette' | 'elsie';
-
 async function getData() {
-  const data = {
-    bette: await getDataFor('bette'),
-    elsie: await getDataFor('elsie'),
+  const elsie = await client.get<SerializedData>('elsie');
+  const bette = await client.get<SerializedData>('bette');
+
+  return {
+    elsie: elsie ? deserialize(elsie) : [],
+    bette: bette ? deserialize(bette) : [],
   };
-
-  return data;
 }
 
-async function getDataFor(daughter: Daughter) {
-  const data = await readFile(process.cwd() + `/data/${daughter}.txt`, 'utf-8');
-
-  const lines = data
-    .split(/\n/)
-    .filter((line) => !!line.trim())
-    .map(parseLine);
-
-  return getMilkPerDay(lines);
-}
+const deserialize = (data: SerializedData): Data => {
+  return data.map((entry) => ({
+    ...entry,
+    date: new Date(entry.date),
+  }));
+};

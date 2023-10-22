@@ -1,8 +1,9 @@
 'use client';
 
-import { MilkEntry } from '@/features/milk';
+import { MilkEntry } from '@/domain/milk';
 import { format, isSameDay } from 'date-fns';
 import { FC } from 'react';
+import styles from './graph.module.css';
 import {
   LineChart,
   Line,
@@ -23,11 +24,11 @@ export const MilkGraph: FC<{ bette: MilkEntry[]; elsie: MilkEntry[] }> = ({
   }));
 
   return (
-    <div style={{ width: '100%', height: 300 }}>
+    <div className={styles.wrapper}>
       <ResponsiveContainer>
         <LineChart data={data}>
-          <Line type="monotone" dataKey="bette" stroke="#b75415" />
-          <Line type="monotone" dataKey="elsie" stroke="#5015b7" />
+          <Line type="monotone" dataKey="bette" stroke="#5015b7" />
+          <Line type="monotone" dataKey="elsie" stroke="#b75415" />
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />

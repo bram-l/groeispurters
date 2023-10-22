@@ -1,0 +1,19 @@
+.button {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #747775;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  display: inline-block;
+  outline: none;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: default;
+  background-color: #ffffff61;
+  border-color: #1f1f1f1f;
+}
