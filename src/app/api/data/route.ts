@@ -1,4 +1,4 @@
-import { Data, SerializedData } from '@/domain/data';
+import { SerializedData } from '@/domain/data';
 import { Name } from '@/domain/name';
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from './client';
@@ -11,8 +11,8 @@ export async function GET() {
   if (!session)
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const bette = await client.get<Data>('bette');
-  const elsie = await client.get<Data>('elsie');
+  const bette = await client.get<SerializedData>('bette');
+  const elsie = await client.get<SerializedData>('elsie');
 
   return NextResponse.json({ bette, elsie });
 }
@@ -44,10 +44,10 @@ export async function POST(req: NextRequest) {
   return NextResponse.json('ok');
 }
 
-const isValidJson = (json: unknown): json is Partial<Record<Name, Data>> => {
-  if (!json || typeof json !== 'object') return false;
+export type UpdateDataRequest = Partial<Record<Name, SerializedData>>;
 
-  if (Object.keys(json).length !== 2) return false;
+const isValidJson = (json: unknown): json is UpdateDataRequest => {
+  if (!json || typeof json !== 'object') return false;
 
   if (!('bette' in json) && !('elsie' in json)) return false;
 

@@ -1,17 +1,26 @@
 'use client';
 import { MilkEntry } from './milk';
 
-export type Data = MilkEntry[];
+export interface Data {
+  milk: MilkEntry[];
+}
 
 export interface SerializedMilkEntry extends Omit<MilkEntry, 'date'> {
   date: string;
 }
 
-export type SerializedData = SerializedMilkEntry[];
+export interface SerializedData {
+  milk: SerializedMilkEntry[];
+}
 
 export const serialize = (data: Data): SerializedData => {
-  return data.map((entry) => ({
-    ...entry,
-    date: entry.date.toISOString(),
-  }));
+  const { milk } = data;
+
+  return {
+    ...data,
+    milk: milk.map((entry) => ({
+      ...entry,
+      date: entry.date.toISOString(),
+    })),
+  };
 };

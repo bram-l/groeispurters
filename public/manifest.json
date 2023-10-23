@@ -1,6 +1,6 @@
 {
     "background_color": "#ffffff",
-    "display": "fullscreen",
+    "display": "standalone",
     "icons": [
         {
             "sizes": "192x192",
@@ -25,12 +25,31 @@
         {
             "purpose": "maskable",
             "sizes": "512x512",
-            "src": "/icon-512x512.png",
+            "src": "/icon-square-512x512.png",
             "type": "image/png"
         }
     ],
     "name": "Groeispurters",
     "scope": "/",
+    "share_target": {
+        "action": "/share",
+        "enctype": "multipart/form-data",
+        "method": "POST",
+        "params": {
+            "files": [
+                {
+                    "accept": [
+                        "text/plain",
+                        ".txt"
+                    ],
+                    "name": "data"
+                }
+            ],
+            "text": "text",
+            "title": "title",
+            "url": "url"
+        }
+    },
     "short_name": "Groeispurters",
     "start_url": "/",
     "theme_color": "#000000"

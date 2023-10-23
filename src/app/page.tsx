@@ -19,12 +19,7 @@ export default async function Home() {
           justifyContent: 'center',
         }}
       >
-        <MilkGraph bette={bette ?? []} elsie={elsie ?? []} />
-        <div style={{ marginTop: '20px' }}>
-          <Link href="/upload">
-            <Button>Upload</Button>
-          </Link>
-        </div>
+        <MilkGraph bette={bette.milk} elsie={elsie.milk} />
       </div>
     </Guard>
   );
@@ -35,14 +30,20 @@ async function getData() {
   const bette = await client.get<SerializedData>('bette');
 
   return {
-    elsie: elsie ? deserialize(elsie) : [],
-    bette: bette ? deserialize(bette) : [],
+    elsie: deserialize(elsie),
+    bette: deserialize(bette),
   };
 }
 
-const deserialize = (data: SerializedData): Data => {
-  return data.map((entry) => ({
-    ...entry,
-    date: new Date(entry.date),
-  }));
+const deserialize = (data?: Partial<SerializedData> | null): Data => {
+  if (!data || !data.milk) return { milk: [] };
+
+  const { milk } = data;
+  return {
+    ...data,
+    milk: milk.map((entry) => ({
+      ...entry,
+      date: new Date(entry.date),
+    })),
+  };
 };

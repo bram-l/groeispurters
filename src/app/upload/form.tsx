@@ -134,5 +134,7 @@ function parseText(input: string) {
     .filter((line) => !!line.trim())
     .map(parseLine);
 
-  return getMilkPerDay(lines);
+  const milk = getMilkPerDay(lines);
+
+  return { milk };
 }

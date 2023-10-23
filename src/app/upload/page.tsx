@@ -1,13 +1,14 @@
+import { Guard } from '../auth';
 import { UploadForm } from './form';
 
 export default function Upload() {
   return (
     <>
-      {/*<Guard>*/}
-      <div>
-        <UploadForm />
-      </div>
-      {/*</Guard>*/}
+      <Guard>
+        <div>
+          <UploadForm />
+        </div>
+      </Guard>
     </>
   );
 }
