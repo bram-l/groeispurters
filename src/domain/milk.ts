@@ -101,4 +101,7 @@ const getAmount = (input: string) => {
 };
 
 const parseDate = (dateTimeString: string) =>
-  parse(dateTimeString, 'M/d/yy, HH:mm', new Date());
+  parse(dateTimeString, detectFormat(dateTimeString), new Date());
+
+const detectFormat = (dateTimeString: string) =>
+  dateTimeString.includes('-') ? 'dd-MM-y HH:mm' : 'M/d/yy, HH:mm';
