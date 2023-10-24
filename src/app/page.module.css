@@ -1,0 +1,23 @@
+.title {
+  display: block;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.today {
+  margin: 20px 0;
+  text-align: center;
+}
+
+@media (orientation: landscape) {
+  .title,
+  .today {
+    display: none;
+  }
+}

@@ -1,24 +1,18 @@
 import { MilkGraph } from './graph';
 import { Guard } from './auth';
-import Link from 'next/link';
 import { client } from './api/data/client';
 import { Data, SerializedData } from '../domain/data';
-import { Button } from '@/components/button';
+import styles from './page.module.css';
+import { MilkToday } from './today';
 
 export default async function Home() {
   const { bette, elsie } = await getData();
 
   return (
     <Guard>
-      <h2>🍼</h2>
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
+      <div className={styles.wrap}>
+        <h2 className={styles.title}>🍼</h2>
+        <MilkToday bette={bette.milk} elsie={elsie.milk} />
         <MilkGraph bette={bette.milk} elsie={elsie.milk} />
       </div>
     </Guard>

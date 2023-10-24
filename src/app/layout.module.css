@@ -6,3 +6,9 @@
   padding: 2rem 1rem;
   min-height: 100vh;
 }
+
+@media (orientation: landscape) {
+  .main {
+    padding: 0;
+  }
+}

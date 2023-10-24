@@ -39,13 +39,13 @@ function getMilkEntries(lines: Line[]): MilkEntry[] {
       return [
         ...previous,
         {
-          amount: getAmount(message),
+          amount: parseAmount(message, /🍼(\d+)/),
           date,
         },
       ];
     }
 
-    if (isAmend(message)) {
+    if (isMilkAmend(message)) {
       const last = previous.pop();
 
       if (!last) return previous;
@@ -53,7 +53,7 @@ function getMilkEntries(lines: Line[]): MilkEntry[] {
       return [
         ...previous,
         {
-          amount: last.amount + getAmount(message),
+          amount: last.amount + parseAmount(message, /\+(\d+)/),
           date: last.date,
         },
       ];
@@ -91,13 +91,16 @@ const splitFirst = (input: string, separator: string) => {
 };
 
 const hasMilk = (input: string) => input.includes('🍼');
-const isAmend = (input: string) => input.includes('+');
-const getAmount = (input: string) => {
-  const match = input.match(/\d+/);
+const isMilkAmend = (input: string) => input.includes('+');
+
+const parseAmount = (input: string, regex = /\d+/) => {
+  const match = input.match(regex);
 
   if (!match) return 0;
 
-  return parseInt(match[0]);
+  const value = match.length === 2 ? match[1] : match[0];
+
+  return parseInt(value);
 };
 
 const parseDate = (dateTimeString: string) =>

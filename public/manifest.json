@@ -30,6 +30,7 @@
         }
     ],
     "name": "Groeispurters",
+    "orientation": "any",
     "scope": "/",
     "share_target": {
         "action": "/share",

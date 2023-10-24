@@ -1,7 +1,7 @@
 'use client';
 
 import { MilkEntry } from '@/domain/milk';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, min } from 'date-fns';
 import { FC } from 'react';
 import styles from './graph.module.css';
 import {
