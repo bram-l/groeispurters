@@ -3,7 +3,7 @@
 import { FC } from 'react';
 import { MilkEntry } from '@/domain/milk';
 import styles from './page.module.css';
-import { isToday } from 'date-fns';
+import { getMilkAmountToday } from '@/domain/milk';
 
 export const MilkToday: FC<{ bette: MilkEntry[]; elsie: MilkEntry[] }> = ({
   bette,
@@ -12,14 +12,8 @@ export const MilkToday: FC<{ bette: MilkEntry[]; elsie: MilkEntry[] }> = ({
   return (
     <div className={styles.today}>
       <h4>VANDAAG</h4>
-      <div>Elsie: {getAmountToday(elsie)}</div>
-      <div>Bette: {getAmountToday(bette)}</div>
+      <div>Elsie: {getMilkAmountToday(elsie)}</div>
+      <div>Bette: {getMilkAmountToday(bette)}</div>
     </div>
   );
 };
-
-function getAmountToday(input: MilkEntry[]) {
-  const last = input.at(-1);
-
-  return !!last && isToday(last.date) ? last.amount : '-';
-}

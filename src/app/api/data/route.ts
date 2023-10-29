@@ -1,9 +1,13 @@
-import { SerializedData } from '@/domain/data';
+import { SerializedData } from '@/data/kv/data';
 import { Name } from '@/domain/name';
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from './client';
+import { client } from '../../../data/kv/client';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/options';
+import { sendNotification } from '@/data/firebase/server/messaging';
+import { getTokens } from '@/data/kv/messaging-tokens';
+import { getMilkAmountToday } from '@/domain/milk';
+import { deserialize } from '@/data/kv/deserialize';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -41,6 +45,8 @@ export async function POST(req: NextRequest) {
     await client.set('elsie', json.elsie);
   }
 
+  await sendUpdateNotification(json);
+
   return NextResponse.json('ok');
 }
 
@@ -53,3 +59,23 @@ const isValidJson = (json: unknown): json is UpdateDataRequest => {
 
   return true;
 };
+
+async function sendUpdateNotification(update: UpdateDataRequest) {
+  const tokens = await getTokens();
+
+  const bette = deserialize(
+    update.bette ?? (await client.get<SerializedData>('bette'))
+  );
+  const elsie = deserialize(
+    update.elsie ?? (await client.get<SerializedData>('elsie'))
+  );
+
+  const message = [
+    'Elsie: ' + getMilkAmountToday(elsie.milk),
+    'Bette: ' + getMilkAmountToday(bette.milk),
+  ].join(', ');
+
+  await sendNotification(tokens, {
+    body: '🍼 ' + message,
+  });
+}

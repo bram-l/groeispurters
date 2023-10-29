@@ -1,12 +1,71 @@
 /// <reference lib="webworker" />
 
 import { UpdateDataRequest } from '@/app/api/data/route';
-import { Data, serialize } from '@/domain/data';
+import { firebase } from '@/data/firebase/client/app';
+import { Data } from '@/data/kv/data';
+import { serialize } from '@/data/kv/serialize';
 import { getMilkPerDay, parseLine } from '@/domain/milk';
 import { Name } from '@/domain/name';
 
 // https://github.com/microsoft/TypeScript/issues/14877
 const worker = globalThis.self as unknown as ServiceWorkerGlobalScope;
+
+import { MessagePayload, getMessaging } from 'firebase/messaging/sw';
+import { onBackgroundMessage } from 'firebase/messaging/sw';
+
+const messaging = getMessaging(firebase);
+
+worker.addEventListener('push', (event) => {
+  handlePushEvent(event);
+});
+
+async function handlePushEvent(event: PushEvent) {
+  const payload: MessagePayload = await event.data?.json();
+  console.log('push', event, payload);
+
+  const title = payload.notification?.title ?? '';
+  const options: NotificationOptions = {
+    body: payload.notification?.body,
+    tag: 'update',
+  };
+
+  worker.registration.showNotification(title, options);
+}
+
+worker.addEventListener('notificationclick', (event) => {
+  console.log('notificationclick', event);
+
+  const urlToOpen = new URL('/', worker.location.origin).href;
+
+  const promiseChain = worker.clients
+    .matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    .then((windowClients) => {
+      let matchingClient = null;
+
+      for (let i = 0; i < windowClients.length; i++) {
+        const windowClient = windowClients[i];
+        if (windowClient.url === urlToOpen) {
+          matchingClient = windowClient;
+          break;
+        }
+      }
+
+      if (matchingClient) {
+        return matchingClient.focus();
+      } else {
+        return worker.clients.openWindow(urlToOpen);
+      }
+    });
+
+  event.waitUntil(promiseChain);
+});
+
+onBackgroundMessage(messaging, (payload) => {
+  console.log('[worker/index.ts] Received background message ', payload);
+});
 
 worker.addEventListener('fetch', (event) => {
   if (!isShareRequest(event)) {

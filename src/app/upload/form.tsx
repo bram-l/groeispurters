@@ -4,7 +4,8 @@ import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { Name } from '@/domain/name';
 import { getMilkPerDay, parseLine } from '@/domain/milk';
 import { Button } from '@/components/button';
-import { Data, serialize } from '../../domain/data';
+import { Data } from '../../data/kv/data';
+import { serialize } from '@/data/kv/serialize';
 import { useRouter } from 'next/navigation';
 import { Guard } from '../auth';
 

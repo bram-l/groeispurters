@@ -1,4 +1,4 @@
-import { isSameDay, isValid, parse, startOfDay } from 'date-fns';
+import { isSameDay, isToday, isValid, parse, startOfDay } from 'date-fns';
 
 export function getMilkPerDay(lines: Line[]): MilkEntry[] {
   const entries = getMilkEntries(lines);
@@ -108,3 +108,8 @@ const parseDate = (dateTimeString: string) =>
 
 const detectFormat = (dateTimeString: string) =>
   dateTimeString.includes('-') ? 'dd-MM-y HH:mm' : 'M/d/yy, HH:mm';
+export function getMilkAmountToday(input: MilkEntry[]) {
+  const last = input.at(-1);
+
+  return !!last && isToday(last.date) ? last.amount : '-';
+}
