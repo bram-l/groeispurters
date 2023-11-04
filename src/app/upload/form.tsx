@@ -1,13 +1,13 @@
 'use client';
 
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { Name } from '@/domain/name';
-import { getMilkPerDay, parseLine } from '@/domain/milk';
-import { Button } from '@/components/button';
+import { Button } from '@/components/Button';
 import { Data } from '../../data/kv/data';
 import { serialize } from '@/data/kv/serialize';
 import { useRouter } from 'next/navigation';
 import { Guard } from '../auth';
+import { parseText } from '@/domain/parse-text';
 
 const allowedFileType = 'text/plain';
 
@@ -51,13 +51,16 @@ export const UploadForm = () => {
       });
   };
 
+  const onSelectBette = useCallback((data: Data) => setBette(data), []);
+  const onSelectElsie = useCallback((data: Data) => setElsie(data), []);
+
   return (
     <>
       <Guard>
         <div>
           <h2>Select files</h2>
-          <Input name="bette" onSelect={(data) => setBette(data)} />
-          <Input name="elsie" onSelect={(data) => setElsie(data)} />
+          <Input name="bette" onSelect={onSelectBette} />
+          <Input name="elsie" onSelect={onSelectElsie} />
           <Button disabled={!bette || !elsie} onClick={onClick}>
             Upload
           </Button>
@@ -112,6 +115,8 @@ function useParser(onSelect: OnSelect) {
 
       const result = parseText(text);
 
+      console.log(file.name, result);
+
       return onSelect(result);
     };
 
@@ -127,15 +132,4 @@ function useParser(onSelect: OnSelect) {
   }, [file, onSelect]);
 
   return { setFile };
-}
-
-function parseText(input: string) {
-  const lines = input
-    .split(/\n/)
-    .filter((line) => !!line.trim())
-    .map(parseLine);
-
-  const milk = getMilkPerDay(lines);
-
-  return { milk };
 }

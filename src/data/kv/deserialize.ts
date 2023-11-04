@@ -1,14 +1,22 @@
 import { SerializedData, Data } from './data';
 
 export const deserialize = (data?: Partial<SerializedData> | null): Data => {
-  if (!data || !data.milk) return { milk: [] };
-
-  const { milk } = data;
-  return {
-    ...data,
-    milk: milk.map((entry) => ({
-      ...entry,
-      date: new Date(entry.date),
-    })),
+  const defaults: Data = {
+    milk: [],
+    diaper: [],
+    poo: [],
+    puke: [],
   };
+
+  return Object.entries(data ?? {}).reduce((previous, [key, value]) => {
+    if (!value) return previous;
+
+    return {
+      ...previous,
+      [key]: value.map((entry) => ({
+        ...entry,
+        date: new Date(entry.date),
+      })),
+    };
+  }, defaults);
 };

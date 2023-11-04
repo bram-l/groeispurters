@@ -4,7 +4,6 @@ import { UpdateDataRequest } from '@/app/api/data/route';
 import { firebase } from '@/data/firebase/client/app';
 import { Data } from '@/data/kv/data';
 import { serialize } from '@/data/kv/serialize';
-import { getMilkPerDay, parseLine } from '@/domain/milk';
 import { Name } from '@/domain/name';
 
 // https://github.com/microsoft/TypeScript/issues/14877
@@ -12,6 +11,7 @@ const worker = globalThis.self as unknown as ServiceWorkerGlobalScope;
 
 import { MessagePayload, getMessaging } from 'firebase/messaging/sw';
 import { onBackgroundMessage } from 'firebase/messaging/sw';
+import { parseText } from '@/domain/parse-text';
 
 const messaging = getMessaging(firebase);
 
@@ -172,15 +172,4 @@ function parseFile(file: File): Promise<Data> {
 
     fileReader.readAsText(file);
   });
-}
-
-function parseText(input: string) {
-  const lines = input
-    .split(/\n/)
-    .filter((line) => !!line.trim())
-    .map(parseLine);
-
-  const milk = getMilkPerDay(lines);
-
-  return { milk };
 }

@@ -1,0 +1,17 @@
+.nav {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.nav a {
+  padding: 10px;
+}
+
+@media (orientation: landscape) {
+  .nav {
+    display: none;
+  }
+}

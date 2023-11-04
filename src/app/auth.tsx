@@ -12,8 +12,11 @@ export const Auth: FC<{ session?: Session; children: ReactNode }> = ({
   return <SessionProvider session={session}>{children}</SessionProvider>;
 };
 
-export const Guard: FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: session, status } = useSession();
+export const Guard: FC<{ children: ReactNode; noFallback?: boolean }> = ({
+  children,
+  noFallback,
+}) => {
+  const { status } = useSession();
 
   if (status === 'loading') return null;
 
@@ -21,11 +24,7 @@ export const Guard: FC<{ children: ReactNode }> = ({ children }) => {
     return <>{children}</>;
   }
 
-  return (
-    <>
-      <SignIn onClick={() => signIn('google')} />
-    </>
-  );
+  return <>{noFallback ? null : <SignIn onClick={() => signIn('google')} />}</>;
 };
 
 const SignIn: FC<{ onClick: any }> = ({ onClick }) => (
