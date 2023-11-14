@@ -16,7 +16,7 @@ function getMilkEntries(lines: Line[]): MilkEntry[] {
       return [
         ...previous,
         {
-          amount: parseAmount(message, /🍼(\d+)/),
+          amount: parseAmount(message, /🍼\s*(\d+)/),
           date,
         },
       ];
@@ -30,7 +30,7 @@ function getMilkEntries(lines: Line[]): MilkEntry[] {
       return [
         ...previous,
         {
-          amount: last.amount + parseAmount(message, /\+(\d+)/),
+          amount: last.amount + parseAmount(message, /\+\s*(\d+)/),
           date: last.date,
         },
       ];
