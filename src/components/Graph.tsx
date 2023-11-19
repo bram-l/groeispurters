@@ -1,7 +1,7 @@
 'use client';
 
 import { MilkEntry } from '@/domain/milk';
-import { add, differenceInDays, format, isSameDay, max, min } from 'date-fns';
+import { add, format, isSameDay } from 'date-fns';
 import styles from './Graph.module.css';
 import {
   LineChart,
@@ -15,6 +15,7 @@ import {
   Legend,
 } from 'recharts';
 import { DateEntry } from '@/domain/per-day';
+import { getDateRange } from '../domain/date-range';
 
 interface BarGraphProps {
   bette: DateEntry[];
@@ -66,14 +67,7 @@ export const MilkGraph = ({ bette, elsie }: MilkGraphProps) => {
 };
 
 const makeGraphData = ({ bette, elsie }: BarGraphProps) => {
-  const dates = bette
-    .map(({ date }) => date)
-    .concat(elsie.map(({ date }) => date));
-
-  const start = min(dates);
-  const end = max(dates);
-
-  const days = differenceInDays(end, start) + 2;
+  const { start, end, days } = getDateRange(bette, elsie);
 
   console.log({ start, end, days });
 

@@ -1,0 +1,10 @@
+.total {
+  margin: 20px 0;
+  text-align: center;
+}
+
+@media (orientation: landscape) {
+  .total {
+    display: none;
+  }
+}
